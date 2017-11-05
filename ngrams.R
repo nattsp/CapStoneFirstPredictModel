@@ -3,6 +3,7 @@ library(tidytext)
 library(tidyr)
 library(igraph)
 library(ggraph)
+library(widyr)
 
 load("..\\..\\Data\\en_US.twitterSample3.RData")
 load("..\\..\\Data\\sampleDataWithRowTibble.RData")
@@ -21,14 +22,14 @@ twitter_bigrams_filtered <- twitter_bigrams %>%
     filter(!word1 %in% stop_words$word) %>%
     filter(!word2 %in% stop_words$word) %>%
     unite(bigram, word1, word2, sep = " ") %>%
-    count(bigram, sort = TRUE)
+    count(textNumber, bigram, sort = TRUE)
 
 twitter_bigrams_filtered
 
 # tf_idf only makes sence when you have different documents
 twitter_bigrams_tf_idf <- twitter_bigrams_filtered %>%
-    count(bigram) %>%
-    #bind_tf_idf(bigram, n) %>%
+    #count(bigram) %>%
+    bind_tf_idf(bigram, textNumber, n) %>%
     arrange(desc(bigram))
 
 bigram_tf_idf <- bigrams_united %>%
@@ -116,4 +117,32 @@ visualize_bigrams <- function(bigrams) {
 
 twitterWordsTweet <- sampleDataWithRowTibble %>%
     unnest_tokens(word, text) %>%
-    filter(!words %in% stop_words$word)
+    filter(!word %in% stop_words$word)
+
+twitterWordsTweet
+
+twitter_word_pairs <- twitterWordsTweet %>%
+    pairwise_count(word, textNumber, sort = TRUE)
+
+twitter_word_pairs
+
+# correlation
+
+twitter_word_cors <- twitterWordsTweet %>%
+    group_by(word) %>%
+    filter(n() >= 20) %>%
+    pairwise_cor(word, textNumber, sort = TRUE)
+
+twitter_word_cors
+
+
+set.seed(2016)
+
+twitter_word_cors %>%
+    filter(correlation > .2) %>%
+    graph_from_data_frame() %>%
+    ggraph(layout = "fr") +
+    geom_edge_link(aes(edge_alpha = correlation), show.legend = FALSE) +
+    geom_node_point(color = "lightblue", size = 5) +
+    geom_node_text(aes(label = name), repel = TRUE) +
+    theme_void()
