@@ -129,11 +129,32 @@ text <- "You're the reason why I smile everyday. Can you follow me please? It wo
 text <- "Hey sunshine, can you follow me and make me the"
 text <- "Very early observations on the Bills game: Offense still struggling but the"
 text <- "Go on a romantic date at the"
-text <- "Well I'm pretty sure my granny has some old bagpipes in her garage I'll dust them off and be on my"
+text <- "Well I'm pretty sure my granny has some old bagpipes in her garage 
+        I'll dust them off and be on my"
+text <- "Ohhhhh #PointBreak is on tomorrow. Love that film and haven't seen it in quite some"
+text <- "After the ice bucket challenge Louis will push his long wet hair out of his eyes with his little"
+text <- "Be grateful for the good times and keep the faith during the"
+text <- "If this isn't the cutest thing you've ever seen, then you must be"
 
 wordPredict <- wordSuggestions(text, twitter_word_cors, twitter_trigrams)
 
 wordPredict
 
-possTrigram(text,twitter_trigrams)
+posTri <- possTrigram(text,twitter_trigrams)
+posTri
 wordsCorr <- findCorrWords(text, twitter_word_cors)
+wordsCorr
+filter(wordsCorr, item2 == "callous")
+
+##Quiz 3
+text <- "I'll be there for you, I'd live and I'd"
+text <- "Guy at my table's wife got up to go to the bathroom and I asked about dessert and he started telling me about his"
+text <- "I'd give anything to see arctic monkeys this"
+text <- "Talking to your mom has the same effect as a hug and helps reduce your"
+
+wordPredict <- wordSuggestions(text, twitter_word_cors, twitter_trigrams)
+wordPredict
+wordsCorr <- findCorrWords(text, twitter_word_cors)
+wordsCorr
+posTri <- possTrigram(text,twitter_trigrams)
+posTri
