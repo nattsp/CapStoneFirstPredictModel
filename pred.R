@@ -5,6 +5,7 @@ library(quanteda)
 library(data.table)
 library(tidytext)
 library(stringr)
+library(RWeka)
 
 
 ## Read in data
@@ -36,4 +37,8 @@ kwic(sampleNewsCorpus, "acknowledges")
 kwic(sampleNewsCorpus, "shit")
 
 sampleNewsToken <- tokens(sampleNewsCorpus)
+sampleNewsSentence <- tokens(sampleNewsCorpus, what = "sentence")
 newsTrigrams <- tokens_ngrams(sampleNewsToken, n=3)
+
+class(newsTrigrams)
+head(newsTrigrams)
