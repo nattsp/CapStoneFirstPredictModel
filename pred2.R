@@ -90,6 +90,23 @@ twitter_trigrams <- unnest_tokens(sampleDataWithRowTibble, trigram, text, token 
     count(trigram, sort = TRUE) %>%
     separate(trigram, c("word1", "word2", "word3"), sep = " ")
 
+twitter_tri_logprob <- twitter_trigrams %>%
+    mutate(word1Comb = word1, word2Comb = word2) %>%
+    unite(bigrams, word1Comb, word2Comb, sep = " ") %>%
+    group_by(bigrams) %>%
+    mutate(countBigrams = sum(n)) %>%
+    ungroup() %>%
+    mutate(Prob3given2 = log(n/countBigrams)) %>%
+    group_by(word1) %>%
+    mutate(countUnigrams = sum(n)) %>%
+    ungroup() %>%
+    mutate(Prob2given1 = log(countBigrams/countUnigrams)) %>%
+    mutate(ProbUnigram = log(countUnigrams/sum(n))) %>%
+    mutate(LogProbTrigram = ProbUnigram + Prob2given1 + Prob3given2) %>%
+    mutate(Perplexity = exp(LogProbTrigram)^-3) %>%
+    mutate(Perplexity2 = (n/sum(n))^-3)
+    
+
 intersect(possTri$word3, wordsCorr$item2)
 
 lastTwo <- function(text){
